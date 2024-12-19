@@ -1,0 +1,15 @@
+# scrapy crawl bus_spider
+# Python files
+*.pyc
+*.pyo
+__pycache__/
+.pytest_cache/
+
+*.env
+*log.txt
+# Virtual environment
+venv/
+env/
+
+# IDE-specific file
+.vscode/ 
