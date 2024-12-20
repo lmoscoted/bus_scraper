@@ -40,7 +40,6 @@ class BusSpider(scrapy.Spider):
     allowed_domains = ["absolutebus.com"]
     start_urls = ["http://absolutebus.com/listings/"]
 
-    PASSANGER_KEY = "psssanger"
     MILES_KEY = "miles"
     WHEELCHAIR_KEY = "wheelchair"
     LUGGAGE_KEY = "luggage"
@@ -144,8 +143,8 @@ class BusSpider(scrapy.Spider):
             if text_to_save:
                 if find_year_make_model(text_to_save, item):
                     continue  # if the year make model is found we continue to the next row
-                elif self.PASSANGER_KEY in text_to_save.lower():
-                    item["passengers"] = text_to_save
+                elif extract_passengers(text_to_save, item):
+                   continue
                 elif self.MILES_KEY in text_to_save.lower():
                     if item.get("mileage", None):
                         continue
@@ -426,3 +425,56 @@ def extract_engine_transmission(text, item):
     )
 
     return engine, transmission
+
+
+def extract_passengers(text, item):
+    """
+    Extracts the total number of passengers from a text string.
+
+    Handles various formats including "X passenger", "X rear + driver",
+    "X children rear + driver", and combinations with additional details.
+
+    Args:
+        text: The input string containing passenger information.
+        item: Bus object which hold the bus information.
+
+    Returns:
+        The total number of passengers as an string, or None if not found or invalid.
+    """
+
+
+    # First, try to extract the overall passenger number
+    match = re.search(r"(\d+)\s*passenger", text, re.IGNORECASE)
+    if match:
+        total_passengers = int(match.group(1))
+
+        # Check for cases like "X rear + driver" or "X children rear + driver" to refine the total number
+        rear_match = re.search(r"(\d+)\s*(?:children\s*)?rear", text, re.IGNORECASE)
+        driver_match = re.search(r"\+driver", text, re.IGNORECASE)
+        copilot_match = re.search(r"\+copilot", text, re.IGNORECASE)
+        wheelchair_match = re.search(r"(\d+)\s*wheelchair", text, re.IGNORECASE)
+        fold_away_match = re.search(r"(\d+)\s*fold away", text, re.IGNORECASE)
+        flip_match = re.search(r"(\d+)\s*flip", text, re.IGNORECASE)
+        dbll_fold_match = re.search(r"(\d+)\s*dbll fold", text, re.IGNORECASE)
+
+
+        if rear_match:
+            rear_passengers = int(rear_match.group(1))
+            total_passengers = rear_passengers
+            if driver_match:
+                total_passengers += 1
+            if copilot_match:
+                total_passengers += 1
+            if wheelchair_match:
+                total_passengers += int(wheelchair_match.group(1))
+            if fold_away_match:
+                total_passengers += int(fold_away_match.group(1))
+            if flip_match:
+                total_passengers += int(flip_match.group(1))
+            if dbll_fold_match:
+                total_passengers += int(dbll_fold_match.group(1))
+        total_passengers_str = str(total_passengers)  
+        item['passengers'] =  total_passengers_str
+
+        return total_passengers_str
+    return None
