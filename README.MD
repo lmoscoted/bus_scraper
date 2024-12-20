@@ -53,6 +53,10 @@ This scraper utilizes Scrapy's features to efficiently extract bus data:
     - Exponential backoff for retrying failed requests.
 - **Pipeline:** The `pipelines.py` file defines the data persistence mechanism. This project includes an example pipeline (`MySQLPipeline`) that demonstrates how to save scraped data to a MySQL database using SQLAlchemy. 
 
+**Database Dump:**
+
+In the root folder there is a database dump sql file that contains the scrapped data for all the three tables called `dump-busesforsale.sql`.
+
 **Error Handling and Retry Logic:**
 
 - The `settings.py` file configures Scrapy with robust error handling and retry logic.
