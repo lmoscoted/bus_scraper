@@ -5,7 +5,7 @@ This is the readme file for the bus scraper project, which utilizes Scrapy to ex
 **Project Structure:**
 ```
 bus_scraper/
-├── __init__.py (empty file)
+├── __init__.py 
 ├── items.py      # Defines data structures for scraped data
 ├── middlewares.py  # Custom middleware for user agent, error handling, etc.
 ├── models.py       # Database models for storing scraped data (optional)
@@ -15,7 +15,7 @@ bus_scraper/
 ├── scrapy_log.txt  # Log file for Scrapy activities
 ├── settings.py     # Scrapy project settings
 └── spiders/
-    ├── __init__.py (empty file)
+    ├── __init__.py 
     └── bus_spider.py  # Spider class for scraping bus listings and details
 ```
 
@@ -26,7 +26,9 @@ This project requires the following Python packages:
 - scrapy
 - pydantic (for data validation in items)
 - sqlalchemy (for database integration)
-- Mysql 8.0 
+
+Also, it use Mysql 8.0  as a database.
+
 
 **Instructions:**
 1. **Create and activate virtual environment:** Run `python -m venv venv` and then activate it. 
@@ -49,7 +51,6 @@ This scraper utilizes Scrapy's features to efficiently extract bus data:
 - **Middleware:** The `middlewares.py` file allows for customization of Scrapy behavior. It implements custom middleware for:
     - User-Agent rotation to avoid website blocking.
     - Exponential backoff for retrying failed requests.
-    - Additional logic can be added here for specific needs.
 - **Pipeline:** The `pipelines.py` file defines the data persistence mechanism. This project includes an example pipeline (`MySQLPipeline`) that demonstrates how to save scraped data to a MySQL database using SQLAlchemy. 
 
 **Error Handling and Retry Logic:**
